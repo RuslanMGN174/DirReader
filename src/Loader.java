@@ -19,11 +19,24 @@ public class Loader {
         }
     }
 
+    private static long getFolderSize(File folder) {
+        long size = 0;
+        for (File entry : folder.listFiles()) {
+            if (entry.isDirectory()) {
+                size += getFolderSize(entry);
+            } else {
+                size += entry.length();
+            }
+        }
+        return size;
+    }
+
     private static void foldersTree(File folder) {
         File[] folderEntries = folder.listFiles();
         for (File entry : folderEntries) {
             if (entry.isDirectory()) {
-                System.out.println(entry.getName());
+                System.out.println(entry.getName() + " - "
+                        + getFolderSize(entry.getAbsoluteFile()) + " байт");
                 foldersTree(entry);
             } else {
                 System.out.printf(" %10d байт - %s%n", entry.length(), entry.getName());
