@@ -12,7 +12,9 @@ public class Loader {
         try {
             text = reader.readLine();
             File srcFile = new File(text);
-            foldersTree(srcFile);
+            String s = humanReadableByteCount(getFolderSize(srcFile), false);
+            System.out.println(getFolderSize(srcFile) + " bytes");
+            System.out.println(s);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -31,16 +33,13 @@ public class Loader {
         return size;
     }
 
-    private static void foldersTree(File folder) {
-        File[] folderEntries = folder.listFiles();
-        for (File entry : folderEntries) {
-            if (entry.isDirectory()) {
-                System.out.println(entry.getName() + " - "
-                        + getFolderSize(entry.getAbsoluteFile()) + " байт");
-                foldersTree(entry);
-            } else {
-                System.out.printf(" %10d байт - %s%n", entry.length(), entry.getName());
-            }
+    public static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) {
+            return bytes + " B";
         }
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        char pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1);
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }
